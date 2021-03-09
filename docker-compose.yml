@@ -4,6 +4,26 @@ services:
     web:
         image: simpleshop
         ports:
-            - 8000:8000
+            - 127.0.0.1:8001:8000
         volumes:
             - ./:/app
+        restart: unless-stopped
+
+    mysql:
+        image: mysql:5.7
+        container_name: mysql
+        restart: unless-stopped
+        tty: true
+        ports:
+            - 127.0.0.1:3327:3306
+        environment:
+          MYSQL_DATABASE: ${DB_DATABASE:-laravel}
+          MYSQL_USER: ${DB_USERNAME:-laravel}
+          MYSQL_PASSWORD: ${DB_PASSWORD:-root}
+          MYSQL_ROOT_PASSWORD: root
+          SERVICE_TAGS: dev
+          SERVICE_NAME: mysql
+        volumes:
+          - ./compose/mysql/my.cnf:/etc/mysql/my.cnf
+          - ./.data/mysql:/var/lib/mysql/
+        restart: unless-stopped

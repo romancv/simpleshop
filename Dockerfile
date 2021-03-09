@@ -8,9 +8,10 @@ RUN apt install -y libzip-dev
 RUN docker-php-ext-configure zip --with-libzip \
   && docker-php-ext-install zip
 RUN apt-get install -y unzip zip
-RUN composer install
 
-CMD composer install && \
-    php artisan migrate && \
-    php artisan serve --host=0.0.0.0 --port=8000
+RUN docker-php-ext-install pdo_mysql && \
+    docker-php-ext-enable pdo_mysql
+
+CMD echo "Running serve..." && \
+    php artisan serve --env docker --host=0.0.0.0 --port=8000
 EXPOSE 8000
